@@ -14,13 +14,13 @@ import TopCompanies from '../components/landing/TopCompanies'
 export const metadata = {
   title: 'Home',
   description: 'Tapos',
+  keywords: 'job portal, job search, career, employment, job listings',
 }
 
 
 export default function Public () {
   return (
     <div>
-        <NavBar></NavBar>
         <Hero></Hero>
         <Features></Features>
         <HowItWorks></HowItWorks>

@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 import Footer from "./components/Footer";
 import CustomHead from "./components/CustomHead";
+import NavBar from "./components/NavBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +21,7 @@ export const metadata = {
     template: "%s | JobPortal",
   },
   description: "Find your dream job with JobPortal.",
+
 };
 
 export default function RootLayout({ children }) {
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
       >
        
         <Providers>
+          <NavBar></NavBar>
           {children}
           <Footer/>
         </Providers>
