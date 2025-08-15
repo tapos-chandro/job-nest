@@ -21,12 +21,9 @@ export default function CreateJob() {
         console.log(data);
 
         console.log(response);
-        // if (response.ok) {
-        //     console.log("Job created successfully");
-        // } else {
-        //     console.error("Error creating job");
-        // }
     }
+
+
 
     return (
         <div className="max-w-2xl mx-auto p-6">

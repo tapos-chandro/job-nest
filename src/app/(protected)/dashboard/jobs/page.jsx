@@ -1,5 +1,8 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
+import { useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
 
 const jobs = [
   {
@@ -25,6 +28,14 @@ const jobs = [
   },
 ]
 
+
+// const { data:jobs, isLoading , error} = useGetJobsQuery();
+
+// if (isLoading) return <div>Loading...</div>;
+// if (error) return <p>Error loading jobs</p>;
+
+// console.log(jobs);
+
 export default function EmployerJobsList() {
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -42,7 +53,7 @@ export default function EmployerJobsList() {
         <p>No jobs posted yet.</p>
       ) : (
         <ul className="space-y-4">
-          {jobs.map((job) => (
+          {jobs?.map((job) => (
             <li
               key={job.id}
               className="border rounded p-4 flex justify-between items-center hover:shadow-md transition"
