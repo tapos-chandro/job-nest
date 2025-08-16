@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { jobsApiSlice } from './features/jobs/jobsSlice'
 
+
 export const store = configureStore({
   reducer: {
-    // Add your reducers here
-     jobsApiSlice: jobsApiSlice.reducer,
+    [jobsApiSlice.reducerPath]: jobsApiSlice.reducer, // RTK Query Reducer added
   },
-
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat(jobsApiSlice.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(jobsApiSlice.middleware), // Middleware added
 })

@@ -6,9 +6,15 @@ export const jobsApiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   endpoints: (builder) => ({
     getJobs: builder.query({
-      query: () => '/jobs',
+      query: () => '/jobs/getJobs',
+    }),
+    deleteJob: builder.mutation({
+      query: (id) => ({
+        url: `/jobs/delete/${id}`,
+        method: "DELETE",
+      }),
     }),
   }),
 })
 
-export const { useGetJobsQuery } = jobsApiSlice
+export const { useGetJobsQuery, useDeleteJobMutation } = jobsApiSlice

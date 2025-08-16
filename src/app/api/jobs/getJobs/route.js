@@ -1,15 +1,16 @@
 import dbConnect, { client } from "@/lib/mongodb";
 
-export async function GET(req) {
+export async function GET(res) {
   try {
     await dbConnect();
 
     const jobsCollection = client.db("job-nest").collection("jobs");
-    
+
     const result = await jobsCollection.find();
 
     const jobs = await result.toArray();
 
+    
     return new Response(
       JSON.stringify({ success: true, jobs }),
       {

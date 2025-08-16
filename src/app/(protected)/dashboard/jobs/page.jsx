@@ -2,41 +2,35 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
+import { useDeleteJobMutation, useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
 
-const jobs = [
-  {
-    id: 'job1',
-    title: 'Frontend Developer',
-    location: 'Remote',
-    status: 'Open',
-    slug: 'frontend-developer',
-  },
-  {
-    id: 'job2',
-    title: 'Backend Engineer',
-    location: 'New York, NY',
-    status: 'Closed',
-    slug: 'backend-engineer',
-  },
-  {
-    id: 'job3',
-    title: 'Product Manager',
-    location: 'San Francisco, CA',
-    status: 'Open',
-    slug: 'product-manager',
-  },
-]
-
-
-// const { data:jobs, isLoading , error} = useGetJobsQuery();
-
-// if (isLoading) return <div>Loading...</div>;
-// if (error) return <p>Error loading jobs</p>;
-
-// console.log(jobs);
 
 export default function EmployerJobsList() {
+
+  const { data: jobs, isLoading, error, refetch } = useGetJobsQuery();
+  const [deleteJob] = useDeleteJobMutation()
+
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <p>Error loading jobs</p>;
+
+  const handleDelete = async (id) => {
+
+    console.log("Deleting job with ID:", id);
+    try {
+      const result = await deleteJob(id);
+      if(result.data.success){
+        console.log("Job deleted successfully:", result);
+        refetch();
+      }
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
+
+  }
+
+
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       <header className="flex justify-between items-center mb-6">
@@ -49,11 +43,11 @@ export default function EmployerJobsList() {
         </Link>
       </header>
 
-      {jobs.length === 0 ? (
+      {jobs?.jobs?.length === 0 ? (
         <p>No jobs posted yet.</p>
       ) : (
         <ul className="space-y-4">
-          {jobs?.map((job) => (
+          {jobs?.jobs?.map((job) => (
             <li
               key={job.id}
               className="border rounded p-4 flex justify-between items-center hover:shadow-md transition"
@@ -63,8 +57,8 @@ export default function EmployerJobsList() {
                 <p className="text-gray-600">{job.location}</p>
                 <p
                   className={`mt-1 inline-block px-2 py-1 text-xs font-semibold rounded ${job.status === 'Open'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-200 text-gray-600'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-200 text-gray-600'
                     }`}
                 >
                   {job.status}
@@ -87,6 +81,7 @@ export default function EmployerJobsList() {
                   // onClick={() => alert('Delete functionality coming soon!')}
                   className="text-red-600 hover:underline cursor-pointer"
                   type="button"
+                  onClick={() => handleDelete(job._id)}
                 >
                   Delete
                 </button>
