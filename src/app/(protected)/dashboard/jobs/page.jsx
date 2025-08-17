@@ -3,6 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { useDeleteJobMutation, useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
+import SuccessModal from '@/app/components/SuccessModal';
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 
 
 export default function EmployerJobsList() {
@@ -11,17 +13,19 @@ export default function EmployerJobsList() {
   const [deleteJob] = useDeleteJobMutation()
 
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SkeletonLoader></SkeletonLoader>;
   if (error) return <p>Error loading jobs</p>;
 
   const handleDelete = async (id) => {
-
-    console.log("Deleting job with ID:", id);
     try {
       const result = await deleteJob(id);
       if(result.data.success){
         console.log("Job deleted successfully:", result);
+
+        <SuccessModal title="Job deleted successfully!" />
+
         refetch();
+        
       }
     } catch (error) {
       console.error("Error deleting job:", error);

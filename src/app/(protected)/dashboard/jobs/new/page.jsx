@@ -1,5 +1,7 @@
 'use client'
+import SuccessModal from '@/app/components/SuccessModal';
 import React from 'react'
+
 
 export default function CreateJob() {
 
@@ -7,7 +9,6 @@ export default function CreateJob() {
         e.preventDefault();
         const formData = new FormData(e.target);
         const jobData = Object.fromEntries(formData);
-        console.log(jobData);
 
         const response = await fetch('/api/jobs/create', {
             method: 'POST',
@@ -18,9 +19,11 @@ export default function CreateJob() {
         });
 
         const data = await response.json();
-        console.log(data);
 
-        console.log(response);
+        if (data?.insertedId) {
+            <SuccessModal title="Job created successfully!" />
+            e.target.reset();
+        }
     }
 
 
