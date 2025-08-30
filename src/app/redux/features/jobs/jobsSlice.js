@@ -8,13 +8,24 @@ export const jobsApiSlice = createApi({
     getJobs: builder.query({
       query: () => '/jobs/getJobs',
     }),
+    getJob: builder.query({
+      query: (id) => `/jobs/getJob/${id}`,
+    }),
     deleteJob: builder.mutation({
       query: (id) => ({
         url: `/jobs/delete/${id}`,
         method: "DELETE",
       }),
     }),
+    updateJob: builder.mutation({
+      query: ({id, jobData}) => ({
+        url: `/jobs/update/${id}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jobData),
+      }),
+    })
   }),
 })
 
-export const { useGetJobsQuery, useDeleteJobMutation } = jobsApiSlice
+export const { useGetJobsQuery, useDeleteJobMutation , useGetJobQuery , useUpdateJobMutation } = jobsApiSlice

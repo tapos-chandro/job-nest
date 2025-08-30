@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useDeleteJobMutation, useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
-import SuccessModal from '@/app/components/SuccessModal';
 import SkeletonLoader from '@/app/components/SkeletonLoader';
+import Swal from 'sweetalert2'
+
 
 
 export default function EmployerJobsList() {
@@ -16,24 +17,25 @@ export default function EmployerJobsList() {
   if (isLoading) return <SkeletonLoader></SkeletonLoader>;
   if (error) return <p>Error loading jobs</p>;
 
+
   const handleDelete = async (id) => {
     try {
       const result = await deleteJob(id);
       if(result.data.success){
-        console.log("Job deleted successfully:", result);
-
-        <SuccessModal title="Job deleted successfully!" />
-
-        refetch();
-        
+        Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: "Job deleted successfully!",
+                showConfirmButton: false,
+                timer: 1500
+            });
       }
+      refetch();
     } catch (error) {
       console.error("Error deleting job:", error);
     }
 
   }
-
-
 
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -76,7 +78,7 @@ export default function EmployerJobsList() {
                   View
                 </Link>
                 <Link
-                  href={`/jobs/${job.slug}/edit`}
+                  href={`/dashboard/jobs/edit/${job._id}`}
                   className="text-yellow-600 hover:underline"
                 >
                   Edit

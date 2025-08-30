@@ -1,6 +1,7 @@
 import dbConnect, { client } from "@/lib/mongodb";
 
 export async function GET(res) {
+
   try {
     await dbConnect();
 

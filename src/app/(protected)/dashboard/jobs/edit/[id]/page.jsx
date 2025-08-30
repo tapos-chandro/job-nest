@@ -1,49 +1,59 @@
 'use client'
+
+import SkeletonLoader from "@/app/components/SkeletonLoader";
+import { useGetJobQuery, useUpdateJobMutation} from "@/app/redux/features/jobs/jobsSlice";
+import { useParams } from "next/navigation";
 import Swal from 'sweetalert2'
-import React from 'react'
 
 
-export default function CreateJob() {
+export default function EditJobPage() {
 
-    const handleCreateJob = async (e) => {
+    const [updateJob] = useUpdateJobMutation();
+
+    const { id } = useParams();
+    console.log("Job ID:", id);
+
+    const { data: job, isLoading, error } = useGetJobQuery(id);
+    console.log(job)
+
+    if (isLoading) {
+        return <SkeletonLoader></SkeletonLoader>
+    }
+
+    const handleEditJob = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const jobData = Object.fromEntries(formData);
+        console.log(jobData);
 
-        const response = await fetch('/api/jobs/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jobData),
-        });
 
-        const data = await response.json();
 
-        if (data.insertedId) {
-                 Swal.fire({
-                         position: "top-center",
-                         icon: "success",
-                         title: "Job created successfully!",
-                         showConfirmButton: false,
-                         timer: 1500
-                     });
-            // e.target.reset();
-
+        const result= await updateJob({id, jobData});
+        console.log(result, 'update results');
+        if(result.data.modifiedCount > 0){
+                Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: "Job updated Successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
         }
-    }
 
+
+
+    }
 
 
     return (
         <div className="max-w-2xl mx-auto p-6">
             <h1 className="text-2xl font-bold mb-6">Create a New Job</h1>
-            <form onSubmit={handleCreateJob} className="space-y-4">
+            <form onSubmit={handleEditJob} className="space-y-4">
                 <input
                     type="text"
                     name="title"
                     placeholder="Job Title"
-
+                    defaultValue={job?.job?.title || ''}
                     className="border p-2 w-full rounded"
                     required
                 />
@@ -52,7 +62,7 @@ export default function CreateJob() {
                     type="text"
                     name="company"
                     placeholder="Company Name"
-
+                    defaultValue={job?.job?.company || ''}
                     className="border p-2 w-full rounded"
                     required
                 />
@@ -62,6 +72,7 @@ export default function CreateJob() {
                     name="location"
                     placeholder="Location"
                     className="border p-2 w-full rounded"
+                    defaultValue={job?.job?.location || ''}
                     required
                 />
 
@@ -69,6 +80,7 @@ export default function CreateJob() {
                     name="description"
                     placeholder="Job Description"
                     className="border p-2 w-full rounded min-h-[120px]"
+                    defaultValue={job?.job?.description || ''}
                     required
                 ></textarea>
 
@@ -77,6 +89,7 @@ export default function CreateJob() {
                     name="salary"
                     placeholder="Salary (optional)"
                     className="border p-2 w-full rounded"
+                    defaultValue={job?.job?.salary || ''}
                 />
 
                 <button
