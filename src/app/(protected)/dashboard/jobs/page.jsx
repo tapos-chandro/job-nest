@@ -1,10 +1,9 @@
-'use client'
-
-import React, { useEffect } from 'react'
-import Link from 'next/link'
+'use client';
+import React from 'react';
+import Link from 'next/link';
 import { useDeleteJobMutation, useGetJobsQuery } from '@/app/redux/features/jobs/jobsSlice';
 import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 
 
@@ -13,7 +12,6 @@ export default function EmployerJobsList() {
   const { data: jobs, isLoading, error, refetch } = useGetJobsQuery();
   const [deleteJob] = useDeleteJobMutation()
 
-
   if (isLoading) return <SkeletonLoader></SkeletonLoader>;
   if (error) return <p>Error loading jobs</p>;
 
@@ -21,21 +19,26 @@ export default function EmployerJobsList() {
   const handleDelete = async (id) => {
     try {
       const result = await deleteJob(id);
-      if(result.data.success){
+      if (result.data.success) {
         Swal.fire({
-                position: "top-center",
-                icon: "success",
-                title: "Job deleted successfully!",
-                showConfirmButton: false,
-                timer: 1500
-            });
+          position: "top-center",
+          icon: "success",
+          title: "Job deleted successfully!",
+          showConfirmButton: false,
+          timer: 1500
+        });
       }
       refetch();
     } catch (error) {
       console.error("Error deleting job:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to delete job!',
+      })
     }
-
   }
+
 
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -49,30 +52,30 @@ export default function EmployerJobsList() {
         </Link>
       </header>
 
-      {jobs?.jobs?.length === 0 ? (
+      {jobs?.jobs?.length === 0 ?
         <p>No jobs posted yet.</p>
-      ) : (
-        <ul className="space-y-4">
-          {jobs?.jobs?.map((job) => (
-            <li
+        :
+        <div>
+          {jobs?.jobs?.map((job) =>
+            <div
               key={job.id}
-              className="border rounded p-4 flex justify-between items-center hover:shadow-md transition"
+              className="border rounded p-4 grid grid-cols-4 gap-4 justify-between items-center hover:shadow-md"
             >
-              <div>
-                <h2 className="text-xl font-semibold">{job.title}</h2>
-                <p className="text-gray-600">{job.location}</p>
+              <div className='lg:col-span-3 md:col-span-3 col-span-4'>
+                <h2 className="text-xl font-semibold w-full break-words">{job.title}</h2>
+                <p className="text-gray-600 break-words">{job.location}</p>
                 <p
-                  className={`mt-1 inline-block px-2 py-1 text-xs font-semibold rounded ${job.status === 'Open'
+                  className={`mt-1 inline-block px-2 py-1 text-xs font-semibold rounded ${job.status?.toLowerCase() === 'open'
                     ? 'bg-green-100 text-green-800'
                     : 'bg-gray-200 text-gray-600'
                     }`}
                 >
-                  {job.status}
+                  {job.status} Pending
                 </p>
               </div>
-              <div className="space-x-3">
+              <div className="flex gap-4  items-center justify-end  lg:col-span-1 md:col-end-1 col-end-4">
                 <Link
-                  href={`/jobs/${job.slug}`}
+                  href={`/dashboard/jobs/view/${job._id}`}
                   className="text-blue-600 hover:underline"
                 >
                   View
@@ -84,7 +87,6 @@ export default function EmployerJobsList() {
                   Edit
                 </Link>
                 <button
-                  // onClick={() => alert('Delete functionality coming soon!')}
                   className="text-red-600 hover:underline cursor-pointer"
                   type="button"
                   onClick={() => handleDelete(job._id)}
@@ -92,10 +94,11 @@ export default function EmployerJobsList() {
                   Delete
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            </div>
+          )}
+        </div>
+
+      }
     </div>
   )
 }

@@ -1,8 +1,10 @@
 'use client'
 
 import SkeletonLoader from "@/app/components/SkeletonLoader";
-import { useGetJobQuery, useUpdateJobMutation} from "@/app/redux/features/jobs/jobsSlice";
-import { useParams } from "next/navigation";
+import { useGetJobQuery, useUpdateJobMutation } from "@/app/redux/features/jobs/jobsSlice";
+import { useParams, useRouter } from "next/navigation";
+
+
 import Swal from 'sweetalert2'
 
 
@@ -10,12 +12,11 @@ export default function EditJobPage() {
 
     const [updateJob] = useUpdateJobMutation();
 
+    const router = useRouter();
+
     const { id } = useParams();
-    console.log("Job ID:", id);
 
-    const { data: job, isLoading, error } = useGetJobQuery(id);
-    console.log(job)
-
+    const { data: job, isLoading, error, refetch } = useGetJobQuery(id);
     if (isLoading) {
         return <SkeletonLoader></SkeletonLoader>
     }
@@ -28,20 +29,19 @@ export default function EditJobPage() {
 
 
 
-        const result= await updateJob({id, jobData});
+        const result = await updateJob({ id, jobData });
         console.log(result, 'update results');
-        if(result.data.modifiedCount > 0){
-                Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: "Job updated Successfully!",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+        if (result.data.modifiedCount > 0) {
+            Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: "Job updated Successfully!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            refetch();
+            router.push('/dashboard/jobs')
         }
-
-
-
     }
 
 
@@ -94,9 +94,9 @@ export default function EditJobPage() {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-green-600 text-white px-4 py-2 hover:cursor-pointer rounded hover:bg-green-700"
                 >
-                    Post Job
+                    Update Job
                 </button>
             </form>
         </div>

@@ -21,15 +21,13 @@ export default function CreateJob() {
         const data = await response.json();
 
         if (data.insertedId) {
-                 Swal.fire({
-                         position: "top-center",
-                         icon: "success",
-                         title: "Job created successfully!",
-                         showConfirmButton: false,
-                         timer: 1500
-                     });
-            // e.target.reset();
-
+            Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: "Job created successfully!",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
 
@@ -81,7 +79,7 @@ export default function CreateJob() {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:cursor-pointer"
                 >
                     Post Job
                 </button>
